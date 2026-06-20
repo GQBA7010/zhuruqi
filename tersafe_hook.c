@@ -29,16 +29,51 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdarg.h>
 
 /* ------------------------------------------------------------------ */
-/* 日志：Android 上走 __android_log_print，其它平台走 stdout            */
+/* 日志：同时输出到 logcat/stdout 和文件 DUMP_PATH                       */
 /* ------------------------------------------------------------------ */
 #if defined(__ANDROID__)
 #include <android/log.h>
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "tersafe_hook", __VA_ARGS__)
-#else
-#define LOGI(...) do { printf(__VA_ARGS__); printf("\n"); fflush(stdout); } while (0)
 #endif
+
+/* 密钥/明文 dump 文件路径 */
+#define DUMP_PATH "/data/local/tmp/tersafe_dump.log"
+
+static FILE * g_dump_fp = NULL;
+
+/* 统一日志：写 logcat/stdout，并追加到 DUMP_PATH（自动补换行） */
+static void
+log_line (const char * fmt, ...)
+{
+  va_list ap;
+  gchar * msg;
+
+  va_start (ap, fmt);
+  msg = g_strdup_vprintf (fmt, ap);
+  va_end (ap);
+
+#if defined(__ANDROID__)
+  __android_log_print (ANDROID_LOG_INFO, "tersafe_hook", "%s", msg);
+#else
+  printf ("%s\n", msg);
+  fflush (stdout);
+#endif
+
+  if (g_dump_fp == NULL)
+    g_dump_fp = fopen (DUMP_PATH, "a");
+  if (g_dump_fp != NULL)
+  {
+    fputs (msg, g_dump_fp);
+    fputc ('\n', g_dump_fp);
+    fflush (g_dump_fp);
+  }
+
+  g_free (msg);
+}
+
+#define LOGI(...) log_line (__VA_ARGS__)
 
 #define TARGET_MODULE "libtersafe.so"
 
