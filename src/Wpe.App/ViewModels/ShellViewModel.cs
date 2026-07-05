@@ -44,7 +44,7 @@ public sealed class ShellViewModel : ObservableObject
             new("home",    "概览",       "\uE80F", () => new HomeViewModel(NavigateTo)),
             new("editor",  "封包编辑器", "\uE7C3", () => new EditorViewModel(NavigateTo)),
             new("inject",  "进程注入",   "\uE945", () => new InjectViewModel()),
-            new("proxy",   "SOCKS 代理", "\uE968", () => new PlaceholderPageViewModel("SOCKS 代理", "代理模式拦截封包，支持多协议、SSL、代理链。", "P4")),
+            new("proxy",   "SOCKS 代理", "\uE968", () => new ProxyViewModel()),
             new("filter",  "滤镜",       "\uE71C", () => new FilterViewModel()),
             new("robot",   "机器人",     "\uE99A", () => new RobotViewModel()),
             new("send",    "发送",       "\uE724", () => new SendViewModel()),
