@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="Themes/Palette.xaml" />
                 <ResourceDictionary Source="Themes/Controls.xaml" />
                 <ResourceDictionary Source="Themes/WindowStyles.xaml" />
+                <ResourceDictionary Source="Themes/Modern.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <conv:BoolToVisibilityConverter x:Key="BoolToVisibility" />

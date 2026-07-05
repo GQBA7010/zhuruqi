@@ -27,10 +27,12 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="FieldLabel" TargetType="{x:Type TextBlock}">
+        <Style x:Key="FieldLabel" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Text.Label}">
             <Setter Property="Foreground" Value="{StaticResource Brush.TextSecondary}" />
-            <Setter Property="FontSize" Value="12" />
             <Setter Property="Margin" Value="0,12,0,5" />
+        </Style>
+        <Style x:Key="GroupTitle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Text.Caption}">
+            <Setter Property="Margin" Value="0,18,0,8" />
         </Style>
     </UserControl.Resources>
 
@@ -42,14 +44,14 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0">
-            <TextBlock Text="{Binding Title}" Style="{StaticResource Text.Title}" />
+            <TextBlock Text="{Binding Title}" Style="{StaticResource Text.Display}" />
             <TextBlock Text="{Binding Description}" Style="{StaticResource Text.Subtle}" Margin="0,6,0,0"
                        TextWrapping="Wrap" />
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,18,0,0">
             <Button Content="新增规则" Style="{StaticResource Button.Primary}" Command="{Binding AddCommand}" />
-            <Button Content="删除" Style="{StaticResource Button.Ghost}" Margin="8,0,0,0" Command="{Binding DeleteCommand}" />
+            <Button Content="删除" Style="{StaticResource Button.Danger}" Margin="8,0,0,0" Command="{Binding DeleteCommand}" />
             <Button Content="全部启用" Style="{StaticResource Button.Ghost}" Margin="8,0,0,0" Command="{Binding EnableAllCommand}" />
             <Button Content="全部停用" Style="{StaticResource Button.Ghost}" Margin="8,0,0,0" Command="{Binding DisableAllCommand}" />
             <Button Content="导入" Style="{StaticResource Button.Ghost}" Margin="8,0,0,0" Command="{Binding LoadCommand}" />
@@ -58,9 +60,9 @@
 
         <Grid Grid.Row="2" Margin="0,16,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.1*" />
+                <ColumnDefinition Width="1*" MinWidth="240" />
                 <ColumnDefinition Width="16" />
-                <ColumnDefinition Width="1.2*" />
+                <ColumnDefinition Width="1.7*" />
             </Grid.ColumnDefinitions>
 
             <!-- 规则列表 -->
@@ -91,52 +93,204 @@
 
             <!-- 规则编辑 -->
             <Border Grid.Column="2" Style="{StaticResource Card}" Effect="{StaticResource Shadow.Card}">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel Margin="4" IsEnabled="{Binding HasSelection}">
-                        <TextBlock Text="规则名称" Style="{StaticResource FieldLabel}" Margin="0,0,0,5" />
-                        <TextBox Text="{Binding FName, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" />
+                <Grid>
+                    <TextBlock Text="选择或新增一条规则以开始编辑" Style="{StaticResource Text.Subtle}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Visibility="{Binding HasSelection, Converter={StaticResource InverseBoolToVisibility}}" />
 
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="12" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="模式" Style="{StaticResource FieldLabel}" />
-                                <ComboBox ItemsSource="{Binding ModeOptions}" DisplayMemberPath="Name"
-                                          SelectedValuePath="Value" SelectedValue="{Binding FMode}" />
-                            </StackPanel>
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="动作" Style="{StaticResource FieldLabel}" />
-                                <ComboBox ItemsSource="{Binding ActionOptions}" DisplayMemberPath="Name"
-                                          SelectedValuePath="Value" SelectedValue="{Binding FAction}" />
-                            </StackPanel>
-                        </Grid>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  Visibility="{Binding HasSelection, Converter={StaticResource BoolToVisibility}}">
+                        <StackPanel Margin="4">
 
-                        <TextBlock Text="作用函数" Style="{StaticResource FieldLabel}" />
-                        <WrapPanel>
-                            <CheckBox Content="Send" IsChecked="{Binding FnSend}" Margin="0,0,16,6" />
-                            <CheckBox Content="SendTo" IsChecked="{Binding FnSendTo}" Margin="0,0,16,6" />
-                            <CheckBox Content="Recv" IsChecked="{Binding FnRecv}" Margin="0,0,16,6" />
-                            <CheckBox Content="RecvFrom" IsChecked="{Binding FnRecvFrom}" Margin="0,0,16,6" />
-                            <CheckBox Content="WSASend" IsChecked="{Binding FnWSASend}" Margin="0,0,16,6" />
-                            <CheckBox Content="WSASendTo" IsChecked="{Binding FnWSASendTo}" Margin="0,0,16,6" />
-                            <CheckBox Content="WSARecv" IsChecked="{Binding FnWSARecv}" Margin="0,0,16,6" />
-                            <CheckBox Content="WSARecvFrom" IsChecked="{Binding FnWSARecvFrom}" Margin="0,0,16,6" />
-                        </WrapPanel>
+                            <!-- 基本 -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="规则名称" Style="{StaticResource FieldLabel}" Margin="0,0,0,5" />
+                                    <TextBox Text="{Binding FName, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" />
+                                </StackPanel>
+                                <CheckBox Grid.Column="1" Content="启用规则" VerticalAlignment="Bottom" Margin="14,0,0,7"
+                                          IsChecked="{Binding IsEnable}" />
+                            </Grid>
 
-                        <TextBlock Text="查找内容（HEX）" Style="{StaticResource FieldLabel}" />
-                        <TextBox Text="{Binding FSearch, UpdateSourceTrigger=PropertyChanged}"
-                                 FontFamily="{StaticResource Font.Mono}" AcceptsReturn="True" TextWrapping="Wrap"
-                                 MinHeight="60" VerticalContentAlignment="Top" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="12" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="12" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="模式" Style="{StaticResource FieldLabel}" />
+                                    <ComboBox ItemsSource="{Binding ModeOptions}" DisplayMemberPath="Name"
+                                              SelectedValuePath="Value" SelectedValue="{Binding FMode}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="动作" Style="{StaticResource FieldLabel}" />
+                                    <ComboBox ItemsSource="{Binding ActionOptions}" DisplayMemberPath="Name"
+                                              SelectedValuePath="Value" SelectedValue="{Binding FAction}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="4" Visibility="{Binding IsAdvanced, Converter={StaticResource BoolToVisibility}}">
+                                    <TextBlock Text="修改起始于" Style="{StaticResource FieldLabel}" />
+                                    <ComboBox ItemsSource="{Binding StartFromOptions}" DisplayMemberPath="Name"
+                                              SelectedValuePath="Value" SelectedValue="{Binding FStartFrom}" />
+                                </StackPanel>
+                            </Grid>
 
-                        <TextBlock Text="替换/修改内容（HEX）" Style="{StaticResource FieldLabel}" />
-                        <TextBox Text="{Binding FModify, UpdateSourceTrigger=PropertyChanged}"
-                                 FontFamily="{StaticResource Font.Mono}" AcceptsReturn="True" TextWrapping="Wrap"
-                                 MinHeight="60" VerticalContentAlignment="Top" />
-                    </StackPanel>
-                </ScrollViewer>
+                            <!-- 指定条件 -->
+                            <TextBlock Text="指定条件" Style="{StaticResource GroupTitle}" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" MinWidth="96" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <CheckBox x:Name="cbHeader" Grid.Row="0" Grid.Column="0" Content="包头" VerticalAlignment="Center"
+                                          Margin="0,5" IsChecked="{Binding AppointHeader}" />
+                                <TextBox Grid.Row="0" Grid.Column="1" Margin="0,5" VerticalContentAlignment="Center"
+                                         FontFamily="{StaticResource Font.Mono}" IsEnabled="{Binding IsChecked, ElementName=cbHeader}"
+                                         Text="{Binding HeaderContent, UpdateSourceTrigger=PropertyChanged}" />
+
+                                <CheckBox x:Name="cbSocket" Grid.Row="1" Grid.Column="0" Content="套接字" VerticalAlignment="Center"
+                                          Margin="0,5" IsChecked="{Binding AppointSocket}" />
+                                <TextBox Grid.Row="1" Grid.Column="1" Margin="0,5" VerticalContentAlignment="Center"
+                                         FontFamily="{StaticResource Font.Mono}" IsEnabled="{Binding IsChecked, ElementName=cbSocket}"
+                                         Text="{Binding SocketContent, UpdateSourceTrigger=PropertyChanged}" />
+
+                                <CheckBox x:Name="cbLength" Grid.Row="2" Grid.Column="0" Content="长度" VerticalAlignment="Center"
+                                          Margin="0,5" IsChecked="{Binding AppointLength}" />
+                                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Margin="0,5"
+                                            IsEnabled="{Binding IsChecked, ElementName=cbLength}">
+                                    <TextBox Width="90" VerticalContentAlignment="Center" FontFamily="{StaticResource Font.Mono}"
+                                             Text="{Binding LengthFrom, UpdateSourceTrigger=PropertyChanged}" />
+                                    <TextBlock Text="—" VerticalAlignment="Center" Margin="10,0"
+                                               Foreground="{StaticResource Brush.TextTertiary}" />
+                                    <TextBox Width="90" VerticalContentAlignment="Center" FontFamily="{StaticResource Font.Mono}"
+                                             Text="{Binding LengthTo, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+
+                                <CheckBox x:Name="cbPort" Grid.Row="3" Grid.Column="0" Content="端口" VerticalAlignment="Center"
+                                          Margin="0,5" IsChecked="{Binding AppointPort}" />
+                                <TextBox Grid.Row="3" Grid.Column="1" Margin="0,5" VerticalContentAlignment="Center" Width="180"
+                                         HorizontalAlignment="Left" FontFamily="{StaticResource Font.Mono}"
+                                         IsEnabled="{Binding IsChecked, ElementName=cbPort}"
+                                         Text="{Binding PortContent, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+
+                            <!-- 作用函数 -->
+                            <TextBlock Text="作用函数" Style="{StaticResource GroupTitle}" />
+                            <WrapPanel>
+                                <CheckBox Content="Send" IsChecked="{Binding FnSend}" Margin="0,0,16,6" />
+                                <CheckBox Content="SendTo" IsChecked="{Binding FnSendTo}" Margin="0,0,16,6" />
+                                <CheckBox Content="Recv" IsChecked="{Binding FnRecv}" Margin="0,0,16,6" />
+                                <CheckBox Content="RecvFrom" IsChecked="{Binding FnRecvFrom}" Margin="0,0,16,6" />
+                                <CheckBox Content="WSASend" IsChecked="{Binding FnWSASend}" Margin="0,0,16,6" />
+                                <CheckBox Content="WSASendTo" IsChecked="{Binding FnWSASendTo}" Margin="0,0,16,6" />
+                                <CheckBox Content="WSARecv" IsChecked="{Binding FnWSARecv}" Margin="0,0,16,6" />
+                                <CheckBox Content="WSARecvFrom" IsChecked="{Binding FnWSARecvFrom}" Margin="0,0,16,6" />
+                            </WrapPanel>
+
+                            <!-- 字节匹配表 -->
+                            <Grid Margin="0,18,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="字节匹配（按位置查找 / 修改）" Style="{StaticResource Text.Caption}"
+                                           VerticalAlignment="Center" />
+                                <Button Grid.Column="1" Content="＋ 添加字节" Style="{StaticResource Button.Ghost}"
+                                        Command="{Binding AddByteCommand}" Padding="12,5" />
+                            </Grid>
+                            <TextBlock Text="位置=从包头起的字节序号（高级“从指定位置”模式可用负数）；查找/修改为两位 HEX。"
+                                       Style="{StaticResource Text.Subtle}" TextWrapping="Wrap" Margin="0,4,0,8" FontSize="11" />
+                            <DataGrid ItemsSource="{Binding ByteEntries}" AutoGenerateColumns="False"
+                                      CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column"
+                                      MaxHeight="220" HorizontalScrollBarVisibility="Disabled">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="位置" Width="70"
+                                                        Binding="{Binding Index, UpdateSourceTrigger=LostFocus}" />
+                                    <DataGridTextColumn Header="查找 (HEX)" Width="*"
+                                                        Binding="{Binding Search, UpdateSourceTrigger=LostFocus}"
+                                                        FontFamily="{StaticResource Font.Mono}" />
+                                    <DataGridTextColumn Header="修改 (HEX)" Width="*"
+                                                        Binding="{Binding Modify, UpdateSourceTrigger=LostFocus}"
+                                                        FontFamily="{StaticResource Font.Mono}" />
+                                    <DataGridCheckBoxColumn Header="递进" Width="60"
+                                                            Binding="{Binding Progression, UpdateSourceTrigger=PropertyChanged}" />
+                                    <DataGridTemplateColumn Width="56">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="删除" Style="{StaticResource Button.Ghost}" Padding="8,2"
+                                                        FontSize="11" Margin="2"
+                                                        Command="{Binding DataContext.RemoveByteCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <!-- 递进设置 -->
+                            <TextBlock Text="递进设置" Style="{StaticResource GroupTitle}" />
+                            <WrapPanel>
+                                <CheckBox Content="连续递进" IsChecked="{Binding IsProgressionContinuous}" Margin="0,0,20,8"
+                                          VerticalAlignment="Center" />
+                                <StackPanel Orientation="Horizontal" Margin="0,0,20,8">
+                                    <TextBlock Text="步长" VerticalAlignment="Center" Margin="0,0,8,0"
+                                               Foreground="{StaticResource Brush.TextSecondary}" />
+                                    <TextBox Width="70" VerticalContentAlignment="Center" FontFamily="{StaticResource Font.Mono}"
+                                             Text="{Binding ProgressionStep, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <CheckBox x:Name="cbCarry" Content="进位递进" IsChecked="{Binding IsProgressionCarry}"
+                                          Margin="0,0,20,8" VerticalAlignment="Center" />
+                                <StackPanel Orientation="Horizontal" Margin="0,0,20,8"
+                                            IsEnabled="{Binding IsChecked, ElementName=cbCarry}">
+                                    <TextBlock Text="进位位数" VerticalAlignment="Center" Margin="0,0,8,0"
+                                               Foreground="{StaticResource Brush.TextSecondary}" />
+                                    <TextBox Width="70" VerticalContentAlignment="Center" FontFamily="{StaticResource Font.Mono}"
+                                             Text="{Binding ProgressionCarryNumber, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                            </WrapPanel>
+
+                            <!-- 执行 -->
+                            <TextBlock Text="匹配后执行" Style="{StaticResource GroupTitle}" />
+                            <CheckBox x:Name="cbExec" Content="匹配成功后自动执行" IsChecked="{Binding IsExecute}" Margin="0,0,0,6" />
+                            <Grid IsEnabled="{Binding IsChecked, ElementName=cbExec}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" MinWidth="140" />
+                                    <ColumnDefinition Width="12" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="执行类型" Style="{StaticResource FieldLabel}" />
+                                    <ComboBox ItemsSource="{Binding ExecuteTypeOptions}" DisplayMemberPath="Name"
+                                              SelectedValuePath="Value" SelectedValue="{Binding FEType}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Visibility="{Binding IsExecuteSend, Converter={StaticResource BoolToVisibility}}">
+                                    <TextBlock Text="选择发送封包" Style="{StaticResource FieldLabel}" />
+                                    <ComboBox ItemsSource="{Binding SendOptions}" DisplayMemberPath="Name"
+                                              SelectedValuePath="Id" SelectedValue="{Binding SID}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Visibility="{Binding IsExecuteRobot, Converter={StaticResource BoolToVisibility}}">
+                                    <TextBlock Text="选择机器人" Style="{StaticResource FieldLabel}" />
+                                    <ComboBox ItemsSource="{Binding RobotOptions}" DisplayMemberPath="Name"
+                                              SelectedValuePath="Id" SelectedValue="{Binding RID}" />
+                                </StackPanel>
+                            </Grid>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
             </Border>
         </Grid>
     </Grid>
