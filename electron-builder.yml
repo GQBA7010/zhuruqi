@@ -13,7 +13,9 @@ win:
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
-  createDesktopShortcut: true
+  createDesktopShortcut: false
+  createStartMenuShortcut: true
+  include: build/installer.nsh
 mac:
   target:
     - dmg
