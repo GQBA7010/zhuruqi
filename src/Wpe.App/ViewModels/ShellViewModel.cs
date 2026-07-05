@@ -42,7 +42,7 @@ public sealed class ShellViewModel : ObservableObject
         PrimaryItems = new ObservableCollection<NavigationItem>
         {
             new("home",    "概览",       "\uE80F", () => new HomeViewModel(NavigateTo)),
-            new("editor",  "封包编辑器", "\uE7C3", () => new PlaceholderPageViewModel("封包编辑器", "实时拦截、查看与修改 WinSock 封包，消息队列缓存显示。", "P2")),
+            new("editor",  "封包编辑器", "\uE7C3", () => new EditorViewModel(NavigateTo)),
             new("inject",  "进程注入",   "\uE945", () => new InjectViewModel()),
             new("proxy",   "SOCKS 代理", "\uE968", () => new PlaceholderPageViewModel("SOCKS 代理", "代理模式拦截封包，支持多协议、SSL、代理链。", "P4")),
             new("filter",  "滤镜",       "\uE71C", () => new PlaceholderPageViewModel("高级滤镜", "自定义拦截规则，可修改封包长度与次数。", "P3")),
