@@ -19,6 +19,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Wpe.Core\Wpe.Core.csproj" />
   </ItemGroup>
 
