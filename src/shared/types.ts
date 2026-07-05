@@ -55,6 +55,10 @@ export interface ServerConfig {
   port: number
   /** 是否把收到的数据原样回传（echo），用于模拟“目标回传数据” */
   echo: boolean
+  /** 自定义回包内容（非空时，收到数据后回复此内容） */
+  replyPayload?: string
+  /** 自定义回包的编码 */
+  replyEncoding?: PayloadEncoding
 }
 
 export interface ServerState {

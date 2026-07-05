@@ -3,8 +3,21 @@ import { EventEmitter } from 'node:events'
 import type {
   ServerConfig,
   ServerState,
-  ServerDataEvent
+  ServerDataEvent,
+  PayloadEncoding
 } from '../../shared/types'
+
+/** 按编码解码自定义回包内容为字节。 */
+function decodeReply(payload: string, encoding: PayloadEncoding): Buffer {
+  switch (encoding) {
+    case 'hex':
+      return Buffer.from(payload.replace(/\s+/g, ''), 'hex')
+    case 'base64':
+      return Buffer.from(payload, 'base64')
+    default:
+      return Buffer.from(payload, 'utf8')
+  }
+}
 
 function hexPreview(buf: Buffer, max = 512): string {
   const slice = buf.subarray(0, max)
@@ -15,10 +28,9 @@ function hexPreview(buf: Buffer, max = 512): string {
 /** 文本预览：保留可打印字符（含换行/制表），不可打印字节以 · 占位，避免乱码。 */
 function textPreview(buf: Buffer, max = 1024): string {
   const text = buf.subarray(0, max).toString('utf8')
-  const cleaned = text.replace(
-    /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\uFFFD]/g,
-    '·'
-  )
+  // eslint-disable-next-line no-control-regex -- 有意匹配不可打印控制字符以做占位
+  const nonPrintable = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\uFFFD]/g
+  const cleaned = text.replace(nonPrintable, '·')
   return buf.length > max ? `${cleaned} …(+${buf.length - max}B)` : cleaned
 }
 
@@ -73,7 +85,25 @@ export class ReceiverServer extends EventEmitter {
           this.emit('data', event)
           this.emit('log', 'data', `← 收到 ${chunk.length} 字节（来自 ${remote}）`)
 
-          if (config.echo) {
+          const customReply = (config.replyPayload ?? '').trim()
+          if (customReply) {
+            let reply: Buffer
+            try {
+              reply = decodeReply(customReply, config.replyEncoding ?? 'utf8')
+            } catch {
+              reply = Buffer.alloc(0)
+              this.emit('log', 'warn', `自定义回包解码失败，已跳过`)
+            }
+            if (reply.length > 0) {
+              socket.write(reply, (err) => {
+                if (!err) {
+                  this.state.bytesSent += reply.length
+                  this.emit('log', 'data', `→ 已回复自定义包 ${reply.length} 字节到 ${remote}`)
+                  this.emitState()
+                }
+              })
+            }
+          } else if (config.echo) {
             socket.write(chunk, (err) => {
               if (!err) {
                 this.state.bytesSent += chunk.length

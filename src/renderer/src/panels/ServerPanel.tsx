@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Switch } from '../components/controls'
+import { Switch, Segment } from '../components/controls'
 import { PlayIcon, StopIcon, TrashIcon } from '../components/icons'
 import type { ServerDataEvent, ServerState } from '../../../shared/types'
 import { formatBytes, fmtTime } from '../lib/format'
@@ -15,6 +15,8 @@ export default function ServerPanel(): React.JSX.Element {
   const [host, setHost] = useState('0.0.0.0')
   const [port, setPort] = useState('9000')
   const [echo, setEcho] = useState(true)
+  const [replyPayload, setReplyPayload] = useState('')
+  const [replyEncoding, setReplyEncoding] = useState<'utf8' | 'hex' | 'base64'>('hex')
   const [busy, setBusy] = useState(false)
   const [state, setState] = useState<ServerState | null>(null)
   const [data, setData] = useState<ServerDataEvent[]>([])
@@ -45,7 +47,9 @@ export default function ServerPanel(): React.JSX.Element {
         const res = await window.api.serverStart({
           host: host.trim() || '0.0.0.0',
           port: Number(port),
-          echo
+          echo,
+          replyPayload: replyPayload.trim() || undefined,
+          replyEncoding
         })
         if (!res.ok) setError(res.error ?? '启动失败')
         else if (res.state) setState(res.state)
@@ -93,6 +97,31 @@ export default function ServerPanel(): React.JSX.Element {
 
           <div className="field">
             <Switch checked={echo} onChange={setEcho} label="回传收到的数据（echo）" />
+          </div>
+
+          <div className="field">
+            <label>自定义回包（可选，填了则优先回复此内容而非 echo）</label>
+            <div style={{ marginBottom: 8 }}>
+              <Segment
+                idPrefix="reply-enc"
+                value={replyEncoding}
+                onChange={setReplyEncoding}
+                options={[
+                  { value: 'hex', label: '十六进制' },
+                  { value: 'utf8', label: 'UTF-8' },
+                  { value: 'base64', label: 'Base64' }
+                ]}
+              />
+            </div>
+            <textarea
+              className={replyEncoding !== 'utf8' ? 'mono' : ''}
+              value={replyPayload}
+              onChange={(e) => setReplyPayload(e.target.value)}
+              placeholder="留空则按上面的 echo 行为；填入内容则收到请求后回复此包"
+              rows={3}
+              disabled={listening}
+              spellCheck={false}
+            />
           </div>
 
           <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginTop: 6 }}>
