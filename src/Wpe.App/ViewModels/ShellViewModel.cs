@@ -49,7 +49,7 @@ public sealed class ShellViewModel : ObservableObject
             new("robot",   "机器人",     "\uE99A", () => new RobotViewModel()),
             new("send",    "发送",       "\uE724", () => new SendViewModel()),
             new("map",     "端口映射",   "\uE704", () => new MapViewModel()),
-            new("account", "代理账号",   "\uE77B", () => new PlaceholderPageViewModel("代理账号", "账号、时长、设备、授权与登录链接管理。", "P4")),
+            new("account", "代理账号",   "\uE77B", () => new AccountViewModel()),
         };
 
         FooterItems = new ObservableCollection<NavigationItem>

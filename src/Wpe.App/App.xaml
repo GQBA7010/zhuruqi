@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:Wpe.App.ViewModels"
              xmlns:views="clr-namespace:Wpe.App.Views"
+             xmlns:conv="clr-namespace:Wpe.App.Converters"
              StartupUri="Views/ShellWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -11,6 +12,9 @@
                 <ResourceDictionary Source="Themes/Controls.xaml" />
                 <ResourceDictionary Source="Themes/WindowStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <conv:BoolToVisibilityConverter x:Key="BoolToVisibility" />
+            <conv:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibility" />
 
             <!-- 页面 ViewModel -> View 映射 -->
             <DataTemplate DataType="{x:Type vm:PlaceholderPageViewModel}">
@@ -36,6 +40,9 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:MapViewModel}">
                 <views:MapView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:AccountViewModel}">
+                <views:AccountView />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:HomeViewModel}">
                 <views:HomeView />

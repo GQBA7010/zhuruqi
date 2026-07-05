@@ -6,6 +6,26 @@ using WPELibrary.Lib;
 
 namespace Wpe.App.Converters
 {
+    /// <summary>bool -> Visibility（true = Visible）。</summary>
+    public sealed class BoolToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            => (value is bool b && b) ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => value is System.Windows.Visibility v && v == System.Windows.Visibility.Visible;
+    }
+
+    /// <summary>bool -> Visibility（true = Collapsed）。</summary>
+    public sealed class InverseBoolToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            => (value is bool b && b) ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => value is System.Windows.Visibility v && v != System.Windows.Visibility.Visible;
+    }
+
     /// <summary>封包类型 -> 本地化名称（复用原生内核映射，保证 1:1）。</summary>
     public sealed class PacketTypeToNameConverter : IValueConverter
     {

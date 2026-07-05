@@ -1,0 +1,118 @@
+<UserControl x:Class="Wpe.App.Views.AccountView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FontFamily="{StaticResource Font.UI}">
+
+    <UserControl.Resources>
+        <Style x:Key="FieldLabel" TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="{StaticResource Brush.TextSecondary}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Margin" Value="0,14,0,5" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="28,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="{Binding Title}" Style="{StaticResource Text.Title}" />
+            <TextBlock Text="{Binding Description}" Style="{StaticResource Text.Subtle}" Margin="0,6,0,0" TextWrapping="Wrap" />
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="0,18,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.4*" />
+                <ColumnDefinition Width="16" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- 账号列表 -->
+            <Border Grid.Column="0" Style="{StaticResource Card}" Effect="{StaticResource Shadow.Card}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,12">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="账号列表" FontWeight="SemiBold" FontSize="14"
+                                       Foreground="{StaticResource Brush.TextPrimary}" VerticalAlignment="Center" />
+                            <CheckBox Content="启用认证" IsChecked="{Binding EnableAccount}" Margin="16,0,0,0"
+                                      VerticalAlignment="Center" Foreground="{StaticResource Brush.TextSecondary}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="新增账号" Style="{StaticResource Button.Primary}" Command="{Binding AddCommand}" />
+                            <Button Content="删除" Style="{StaticResource Button.Ghost}" Margin="8,0,0,0" Command="{Binding DeleteCommand}" />
+                        </StackPanel>
+                    </Grid>
+                    <Border Grid.Row="1" Background="{StaticResource Brush.Base}" BorderBrush="{StaticResource Brush.BorderSubtle}"
+                            BorderThickness="1" CornerRadius="{StaticResource Radius.Md}">
+                        <DataGrid ItemsSource="{Binding Accounts}" SelectedItem="{Binding Selected}"
+                                  AutoGenerateColumns="False" HeadersVisibility="Column" IsReadOnly="True"
+                                  CanUserAddRows="False" GridLinesVisibility="None" Background="Transparent"
+                                  BorderThickness="0" RowBackground="Transparent" FontSize="12"
+                                  SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridCheckBoxColumn Header="启用" Binding="{Binding IsEnable}" Width="52" />
+                                <DataGridTextColumn Header="账号" Binding="{Binding UserName}" Width="*" />
+                                <DataGridTextColumn Header="密码" Binding="{Binding PassWord}" Width="*" FontFamily="{StaticResource Font.Mono}" />
+                                <DataGridCheckBoxColumn Header="在线" Binding="{Binding IsOnLine}" Width="52" />
+                                <DataGridTextColumn Header="到期" Binding="{Binding ExpiryTime, StringFormat=yyyy-MM-dd}" Width="110"
+                                                    FontFamily="{StaticResource Font.Mono}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- 账号编辑 -->
+            <Border Grid.Column="2" Style="{StaticResource Card}" Effect="{StaticResource Shadow.Card}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="账号详情" FontWeight="SemiBold" FontSize="14" Foreground="{StaticResource Brush.TextPrimary}" />
+
+                        <Grid Visibility="{Binding HasSelection, Converter={StaticResource BoolToVisibility}}">
+                            <StackPanel>
+                                <TextBlock Text="账号" Style="{StaticResource FieldLabel}" />
+                                <TextBox Text="{Binding UserName, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" />
+
+                                <TextBlock Text="密码" Style="{StaticResource FieldLabel}" />
+                                <TextBox Text="{Binding PassWord, UpdateSourceTrigger=PropertyChanged}"
+                                         FontFamily="{StaticResource Font.Mono}" VerticalContentAlignment="Center" />
+
+                                <CheckBox Content="启用该账号" IsChecked="{Binding IsEnable}" Margin="0,16,0,0"
+                                          Foreground="{StaticResource Brush.TextSecondary}" />
+
+                                <Separator Margin="0,16" Background="{StaticResource Brush.BorderSubtle}" />
+
+                                <CheckBox Content="限制最大链接数" IsChecked="{Binding IsLimitLinks}"
+                                          Foreground="{StaticResource Brush.TextSecondary}" />
+                                <TextBox Text="{Binding LimitLinks, UpdateSourceTrigger=PropertyChanged}" Margin="0,8,0,0"
+                                         FontFamily="{StaticResource Font.Mono}" VerticalContentAlignment="Center"
+                                         IsEnabled="{Binding IsLimitLinks}" Width="120" HorizontalAlignment="Left" />
+
+                                <CheckBox Content="限制最大设备数" IsChecked="{Binding IsLimitDevices}" Margin="0,14,0,0"
+                                          Foreground="{StaticResource Brush.TextSecondary}" />
+                                <TextBox Text="{Binding LimitDevices, UpdateSourceTrigger=PropertyChanged}" Margin="0,8,0,0"
+                                         FontFamily="{StaticResource Font.Mono}" VerticalContentAlignment="Center"
+                                         IsEnabled="{Binding IsLimitDevices}" Width="120" HorizontalAlignment="Left" />
+
+                                <CheckBox Content="账号有过期时间" IsChecked="{Binding IsExpiry}" Margin="0,14,0,0"
+                                          Foreground="{StaticResource Brush.TextSecondary}" />
+                                <DatePicker SelectedDate="{Binding ExpiryTime}" Margin="0,8,0,0"
+                                            IsEnabled="{Binding IsExpiry}" Width="180" HorizontalAlignment="Left" />
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="从左侧选择一个账号进行编辑" Foreground="{StaticResource Brush.TextTertiary}"
+                                   FontSize="12" Margin="0,20,0,0"
+                                   Visibility="{Binding HasSelection, Converter={StaticResource InverseBoolToVisibility}}" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
