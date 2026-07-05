@@ -1,0 +1,80 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ==================== 商业级白色主题调色板 ==================== -->
+
+    <!-- 品牌主色（WPE 蓝） -->
+    <Color x:Key="Brand.Primary">#2563EB</Color>
+    <Color x:Key="Brand.PrimaryHover">#1D4ED8</Color>
+    <Color x:Key="Brand.PrimaryPressed">#1E40AF</Color>
+    <Color x:Key="Brand.Accent">#0EA5E9</Color>
+
+    <!-- 语义色 -->
+    <Color x:Key="Semantic.Success">#16A34A</Color>
+    <Color x:Key="Semantic.Warning">#D97706</Color>
+    <Color x:Key="Semantic.Danger">#DC2626</Color>
+    <Color x:Key="Semantic.Info">#0284C7</Color>
+
+    <!-- 中性面板（纯白主题分层） -->
+    <Color x:Key="Surface.Window">#FFFFFF</Color>
+    <Color x:Key="Surface.Base">#F8FAFC</Color>
+    <Color x:Key="Surface.Raised">#FFFFFF</Color>
+    <Color x:Key="Surface.Sunken">#F1F5F9</Color>
+    <Color x:Key="Surface.Hover">#EEF2F7</Color>
+    <Color x:Key="Surface.Selected">#E0EAFF</Color>
+
+    <!-- 边框/分隔线 -->
+    <Color x:Key="Border.Subtle">#E5E9F0</Color>
+    <Color x:Key="Border.Default">#D8DEE9</Color>
+    <Color x:Key="Border.Strong">#C3CBD9</Color>
+
+    <!-- 文本 -->
+    <Color x:Key="Text.Primary">#0F172A</Color>
+    <Color x:Key="Text.Secondary">#475569</Color>
+    <Color x:Key="Text.Tertiary">#94A3B8</Color>
+    <Color x:Key="Text.OnPrimary">#FFFFFF</Color>
+
+    <!-- ==================== 画刷 ==================== -->
+    <SolidColorBrush x:Key="Brush.Primary" Color="{StaticResource Brand.Primary}" />
+    <SolidColorBrush x:Key="Brush.PrimaryHover" Color="{StaticResource Brand.PrimaryHover}" />
+    <SolidColorBrush x:Key="Brush.PrimaryPressed" Color="{StaticResource Brand.PrimaryPressed}" />
+    <SolidColorBrush x:Key="Brush.Accent" Color="{StaticResource Brand.Accent}" />
+
+    <SolidColorBrush x:Key="Brush.Success" Color="{StaticResource Semantic.Success}" />
+    <SolidColorBrush x:Key="Brush.Warning" Color="{StaticResource Semantic.Warning}" />
+    <SolidColorBrush x:Key="Brush.Danger" Color="{StaticResource Semantic.Danger}" />
+    <SolidColorBrush x:Key="Brush.Info" Color="{StaticResource Semantic.Info}" />
+
+    <SolidColorBrush x:Key="Brush.Window" Color="{StaticResource Surface.Window}" />
+    <SolidColorBrush x:Key="Brush.Base" Color="{StaticResource Surface.Base}" />
+    <SolidColorBrush x:Key="Brush.Raised" Color="{StaticResource Surface.Raised}" />
+    <SolidColorBrush x:Key="Brush.Sunken" Color="{StaticResource Surface.Sunken}" />
+    <SolidColorBrush x:Key="Brush.Hover" Color="{StaticResource Surface.Hover}" />
+    <SolidColorBrush x:Key="Brush.Selected" Color="{StaticResource Surface.Selected}" />
+
+    <SolidColorBrush x:Key="Brush.BorderSubtle" Color="{StaticResource Border.Subtle}" />
+    <SolidColorBrush x:Key="Brush.BorderDefault" Color="{StaticResource Border.Default}" />
+    <SolidColorBrush x:Key="Brush.BorderStrong" Color="{StaticResource Border.Strong}" />
+
+    <SolidColorBrush x:Key="Brush.TextPrimary" Color="{StaticResource Text.Primary}" />
+    <SolidColorBrush x:Key="Brush.TextSecondary" Color="{StaticResource Text.Secondary}" />
+    <SolidColorBrush x:Key="Brush.TextTertiary" Color="{StaticResource Text.Tertiary}" />
+    <SolidColorBrush x:Key="Brush.TextOnPrimary" Color="{StaticResource Text.OnPrimary}" />
+
+    <!-- 圆角与尺寸 -->
+    <CornerRadius x:Key="Radius.Sm">6</CornerRadius>
+    <CornerRadius x:Key="Radius.Md">10</CornerRadius>
+    <CornerRadius x:Key="Radius.Lg">14</CornerRadius>
+    <sys:Double x:Key="Size.ControlHeight">34</sys:Double>
+    <sys:Double x:Key="Size.TitleBar">44</sys:Double>
+
+    <!-- 字体 -->
+    <FontFamily x:Key="Font.UI">Segoe UI, Microsoft YaHei UI, Microsoft YaHei, sans-serif</FontFamily>
+    <FontFamily x:Key="Font.Mono">Cascadia Mono, Consolas, Courier New, monospace</FontFamily>
+
+    <!-- 阴影 -->
+    <DropShadowEffect x:Key="Shadow.Card" Color="#1E293B" Opacity="0.12" BlurRadius="18" ShadowDepth="2" Direction="270" />
+    <DropShadowEffect x:Key="Shadow.Popup" Color="#0F172A" Opacity="0.22" BlurRadius="28" ShadowDepth="6" Direction="270" />
+
+</ResourceDictionary>
