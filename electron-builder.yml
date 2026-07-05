@@ -1,5 +1,5 @@
-appId: com.zhuruqi.app
-productName: 入侵器
+appId: com.cac.app
+productName: Cac
 directories:
   output: release
   buildResources: build

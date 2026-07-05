@@ -86,3 +86,28 @@ export const LinkIcon: React.FC<IconProps> = ({ size, ...p }) => (
     <path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" />
   </svg>
 )
+
+export const MinimizeIcon: React.FC<IconProps> = ({ size = 14, ...p }) => (
+  <svg {...base(size)} strokeWidth={1.6} {...p}>
+    <path d="M5 12h14" />
+  </svg>
+)
+
+export const MaximizeIcon: React.FC<IconProps> = ({ size = 14, ...p }) => (
+  <svg {...base(size)} strokeWidth={1.6} {...p}>
+    <rect x="5" y="5" width="14" height="14" rx="2.5" />
+  </svg>
+)
+
+export const RestoreIcon: React.FC<IconProps> = ({ size = 14, ...p }) => (
+  <svg {...base(size)} strokeWidth={1.6} {...p}>
+    <rect x="7" y="7" width="12" height="12" rx="2.5" />
+    <path d="M5 15V6a2 2 0 0 1 2-2h9" />
+  </svg>
+)
+
+export const CloseIcon: React.FC<IconProps> = ({ size = 14, ...p }) => (
+  <svg {...base(size)} strokeWidth={1.6} {...p}>
+    <path d="M6 6l12 12M18 6 6 18" />
+  </svg>
+)

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { BrandLogo, ClientIcon, ServerIcon } from './components/icons'
+import Titlebar from './components/Titlebar'
 import Console from './components/Console'
 import ClientPanel from './panels/ClientPanel'
 import ServerPanel from './panels/ServerPanel'
@@ -24,62 +25,60 @@ export default function App(): React.JSX.Element {
   }, [])
 
   return (
-    <div className="app">
-      <aside className="sidebar">
-        <div className="brand">
-          <BrandLogo size={40} />
-          <div>
-            <div className="brand-title">入侵器</div>
-            <div className="brand-sub">SOCKS5 / HTTP · ccproxy</div>
-          </div>
-        </div>
-
-        {NAV.map((n) => {
-          const Icon = n.icon
-          const active = tab === n.key
-          return (
-            <div
-              key={n.key}
-              className={`nav-item ${active ? 'active' : ''}`}
-              onClick={() => setTab(n.key)}
-            >
-              {active && (
-                <motion.div
-                  layoutId="nav-pill"
-                  className="nav-pill"
-                  transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-                />
-              )}
-              <Icon size={20} />
-              <span>{n.label}</span>
+    <div className="shell">
+      <Titlebar />
+      <div className="app">
+        <aside className="sidebar">
+          <div className="brand">
+            <BrandLogo size={38} />
+            <div>
+              <div className="brand-title">Cac</div>
+              <div className="brand-sub">SOCKS5 / HTTP · ccproxy</div>
             </div>
-          )
-        })}
+          </div>
 
-        <div className="sidebar-foot">
-          伪客户端 → ccproxy → 目标
-          <br />
-          目标 → 伪服务端（回传）
-        </div>
-      </aside>
+          {NAV.map((n) => {
+            const Icon = n.icon
+            const active = tab === n.key
+            return (
+              <div
+                key={n.key}
+                className={`nav-item ${active ? 'active' : ''}`}
+                onClick={() => setTab(n.key)}
+              >
+                {active && (
+                  <motion.div
+                    layoutId="nav-pill"
+                    className="nav-pill"
+                    transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                  />
+                )}
+                <Icon size={20} />
+                <span>{n.label}</span>
+              </div>
+            )
+          })}
 
-      <main className="main">
-        <div className="content">
-          <AnimatePresence mode="popLayout" initial={false}>
-            <motion.div
-              key={tab}
-              initial={{ opacity: 0, y: 14, filter: 'blur(6px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -10, filter: 'blur(6px)' }}
-              transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-            >
-              {tab === 'client' ? <ClientPanel /> : <ServerPanel />}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+          <div className="sidebar-foot">
+            伪客户端 → ccproxy → 目标
+            <br />
+            目标 → 伪服务端（回传）
+          </div>
+        </aside>
 
-        <Console logs={logs} onClear={() => setLogs([])} />
-      </main>
+        <main className="main">
+          <div className="content">
+            <div className={`page-layer ${tab === 'client' ? 'active' : ''}`}>
+              <ClientPanel />
+            </div>
+            <div className={`page-layer ${tab === 'server' ? 'active' : ''}`}>
+              <ServerPanel />
+            </div>
+          </div>
+
+          <Console logs={logs} onClear={() => setLogs([])} />
+        </main>
+      </div>
     </div>
   )
 }

@@ -37,10 +37,13 @@ function createWindow(): void {
     minWidth: 940,
     minHeight: 640,
     show: false,
+    frame: false,
     autoHideMenuBar: true,
-    title: '入侵器 · SOCKS5/HTTP 数据收发',
+    title: 'Cac',
+    icon: join(__dirname, '../../build/icon.png'),
     backgroundColor: '#eef1f8',
-    titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
+    titleBarStyle: process.platform === 'darwin' ? 'hidden' : 'hidden',
+    trafficLightPosition: { x: 14, y: 14 },
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -50,6 +53,11 @@ function createWindow(): void {
   })
 
   mainWindow.on('ready-to-show', () => mainWindow?.show())
+
+  const emitMaximize = (): void =>
+    sendToRenderer(IPC.winMaximizeEvent, mainWindow?.isMaximized() ?? false)
+  mainWindow.on('maximize', emitMaximize)
+  mainWindow.on('unmaximize', emitMaximize)
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
@@ -90,6 +98,14 @@ function registerIpc(): void {
   })
 
   ipcMain.handle(IPC.serverGetState, async () => receiver.getState())
+
+  ipcMain.on(IPC.winMinimize, () => mainWindow?.minimize())
+  ipcMain.on(IPC.winToggleMaximize, () => {
+    if (!mainWindow) return
+    if (mainWindow.isMaximized()) mainWindow.unmaximize()
+    else mainWindow.maximize()
+  })
+  ipcMain.on(IPC.winClose, () => mainWindow?.close())
 }
 
 app.whenReady().then(() => {

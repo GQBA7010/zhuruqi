@@ -19,6 +19,10 @@ export interface Api {
   onLog: (cb: (entry: LogEntry) => void) => () => void
   onServerState: (cb: (state: ServerState) => void) => () => void
   onServerData: (cb: (evt: ServerDataEvent) => void) => () => void
+  winMinimize: () => void
+  winToggleMaximize: () => void
+  winClose: () => void
+  onWinMaximize: (cb: (maximized: boolean) => void) => () => void
 }
 
 const api: Api = {
@@ -40,6 +44,14 @@ const api: Api = {
     const listener = (_e: unknown, evt: ServerDataEvent): void => cb(evt)
     ipcRenderer.on(IPC.serverDataEvent, listener)
     return () => ipcRenderer.removeListener(IPC.serverDataEvent, listener)
+  },
+  winMinimize: () => ipcRenderer.send(IPC.winMinimize),
+  winToggleMaximize: () => ipcRenderer.send(IPC.winToggleMaximize),
+  winClose: () => ipcRenderer.send(IPC.winClose),
+  onWinMaximize: (cb) => {
+    const listener = (_e: unknown, maximized: boolean): void => cb(maximized)
+    ipcRenderer.on(IPC.winMaximizeEvent, listener)
+    return () => ipcRenderer.removeListener(IPC.winMaximizeEvent, listener)
   }
 }
 
