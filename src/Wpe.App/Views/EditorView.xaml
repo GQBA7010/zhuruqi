@@ -78,6 +78,8 @@
                     Command="{Binding FilterCommand}" />
             <Button Content="发送封包" Style="{StaticResource Button.Ghost}" Margin="8,0,0,0"
                     Command="{Binding SendCommand}" />
+            <Button Content="对比" Style="{StaticResource Button.Ghost}" Margin="8,0,0,0"
+                    Command="{Binding CompareCommand}" />
             <CheckBox Content="自动滚动" IsChecked="{Binding AutoRoll}" Margin="16,0,0,0"
                       VerticalAlignment="Center" Foreground="{StaticResource Brush.TextSecondary}" />
             <CheckBox Content="自动清理" IsChecked="{Binding AutoClear}" Margin="14,0,0,0"

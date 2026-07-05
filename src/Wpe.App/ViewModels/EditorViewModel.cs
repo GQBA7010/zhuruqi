@@ -26,6 +26,10 @@ namespace Wpe.App.ViewModels
         public RelayCommand SendCommand { get; }
         public RelayCommand FindCommand { get; }
         public RelayCommand ClearSearchCommand { get; }
+        public RelayCommand CompareCommand { get; }
+
+        /// <summary>请求打开封包对比窗口（由 View 订阅并弹出对话框，保持 VM 与窗口解耦）。</summary>
+        public event Action<Socket_PacketInfo> CompareRequested;
 
         public EditorViewModel(Action<string> navigate = null)
         {
@@ -41,6 +45,7 @@ namespace Wpe.App.ViewModels
             SendCommand = new RelayCommand(_ => _navigate?.Invoke("send"));
             FindCommand = new RelayCommand(_ => ApplySearch());
             ClearSearchCommand = new RelayCommand(_ => ClearSearch(), _ => _searchActive);
+            CompareCommand = new RelayCommand(_ => CompareRequested?.Invoke(_selectedPacket), _ => _selectedPacket != null);
 
             RefreshStats();
         }
