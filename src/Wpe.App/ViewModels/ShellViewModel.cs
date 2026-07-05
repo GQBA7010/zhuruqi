@@ -54,8 +54,8 @@ public sealed class ShellViewModel : ObservableObject
 
         FooterItems = new ObservableCollection<NavigationItem>
         {
-            new("log",      "运行日志", "\uE7C4", () => new PlaceholderPageViewModel("运行日志", "实时记录并支持导出运行日志。", "P3")),
-            new("settings", "设置",     "\uE713", () => new PlaceholderPageViewModel("设置", "系统配置、远程管理、多语言与备份恢复。", "P2")),
+            new("log",      "运行日志", "\uE7C4", () => new LogViewModel()),
+            new("settings", "设置",     "\uE713", () => new SettingsViewModel()),
             new("about",    "关于",     "\uE946", () => new AboutViewModel()),
         };
 

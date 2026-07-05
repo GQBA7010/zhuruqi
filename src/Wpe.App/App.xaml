@@ -44,6 +44,12 @@
             <DataTemplate DataType="{x:Type vm:AccountViewModel}">
                 <views:AccountView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:LogViewModel}">
+                <views:LogView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+                <views:SettingsView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:HomeViewModel}">
                 <views:HomeView />
             </DataTemplate>
