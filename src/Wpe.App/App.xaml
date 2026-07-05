@@ -22,6 +22,9 @@
             <DataTemplate DataType="{x:Type vm:EditorViewModel}">
                 <views:EditorView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:FilterViewModel}">
+                <views:FilterView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:HomeViewModel}">
                 <views:HomeView />
             </DataTemplate>

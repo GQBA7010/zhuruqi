@@ -45,7 +45,7 @@ public sealed class ShellViewModel : ObservableObject
             new("editor",  "封包编辑器", "\uE7C3", () => new EditorViewModel(NavigateTo)),
             new("inject",  "进程注入",   "\uE945", () => new InjectViewModel()),
             new("proxy",   "SOCKS 代理", "\uE968", () => new PlaceholderPageViewModel("SOCKS 代理", "代理模式拦截封包，支持多协议、SSL、代理链。", "P4")),
-            new("filter",  "滤镜",       "\uE71C", () => new PlaceholderPageViewModel("高级滤镜", "自定义拦截规则，可修改封包长度与次数。", "P3")),
+            new("filter",  "滤镜",       "\uE71C", () => new FilterViewModel()),
             new("robot",   "机器人",     "\uE99A", () => new PlaceholderPageViewModel("自动化机器人", "满足触发条件时执行预定义指令集。", "P3")),
             new("send",    "发送",       "\uE724", () => new PlaceholderPageViewModel("封包发送", "批量发送封包，自定义顺序与循环次数。", "P3")),
             new("map",     "端口映射",   "\uE704", () => new PlaceholderPageViewModel("端口映射", "本地/远程端口映射（MapLocal / MapRemote）。", "P4")),
