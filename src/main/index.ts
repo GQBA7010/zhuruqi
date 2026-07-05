@@ -39,7 +39,7 @@ function createWindow(): void {
     show: false,
     autoHideMenuBar: true,
     title: '入侵器 · SOCKS5/HTTP 数据收发',
-    backgroundColor: '#0b1020',
+    backgroundColor: '#eef1f8',
     titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),

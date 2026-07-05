@@ -65,13 +65,13 @@ export default function App(): React.JSX.Element {
 
       <main className="main">
         <div className="content">
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="popLayout" initial={false}>
             <motion.div
               key={tab}
-              initial={{ opacity: 0, x: 18 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -18 }}
-              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0, y: 14, filter: 'blur(6px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: -10, filter: 'blur(6px)' }}
+              transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
             >
               {tab === 'client' ? <ClientPanel /> : <ServerPanel />}
             </motion.div>
