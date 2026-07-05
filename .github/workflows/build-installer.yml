@@ -1,0 +1,77 @@
+name: Build Installer (Windows)
+
+# 在 windows-latest 上编译 net48 WPF 解决方案并用 Inno Setup 打包成安装向导 exe。
+# 触发：推送 v* 标签自动发布 Release；也可在 Actions 页手动运行。
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "版本号（不含 v 前缀，如 1.1.0）"
+        required: false
+        default: "1.1.0"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: ver
+        shell: pwsh
+        run: |
+          if ($env:GITHUB_REF -like "refs/tags/v*") {
+            $v = $env:GITHUB_REF -replace "refs/tags/v", ""
+          } elseif ("${{ github.event.inputs.version }}") {
+            $v = "${{ github.event.inputs.version }}"
+          } else {
+            $v = "1.1.0"
+          }
+          echo "version=$v" >> $env:GITHUB_OUTPUT
+          echo "解析版本: $v"
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
+
+      - name: Restore NuGet packages
+        run: nuget restore src/WPE.sln
+
+      - name: Build (Release)
+        run: msbuild src/WPE.sln /p:Configuration=Release /m /verbosity:minimal
+
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Build installer
+        run: |
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /DMyAppVersion=${{ steps.ver.outputs.version }} installer\wpe.iss
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WPE_x64_Setup_${{ steps.ver.outputs.version }}
+          path: dist/*.exe
+          if-no-files-found: error
+
+      - name: Publish Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.exe
+          name: WPE x64 v${{ steps.ver.outputs.version }}
+          tag_name: ${{ github.ref_name }}
+          body: |
+            WPE x64（白主题 WPF 重构版）Windows 安装向导。
+
+            - 由 GitHub Actions（windows-latest）编译并用 Inno Setup 打包。
+            - 运行需 .NET Framework 4.8；安装后请以管理员身份运行。
