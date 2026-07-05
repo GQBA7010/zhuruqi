@@ -28,11 +28,20 @@ public sealed class ShellViewModel : ObservableObject
         private set => SetProperty(ref _currentContent, value);
     }
 
+    /// <summary>按导航键切换页面（供概览页的模式快捷入口使用）。</summary>
+    public void NavigateTo(string key)
+    {
+        foreach (var item in PrimaryItems)
+            if (item.Key == key) { SelectedItem = item; return; }
+        foreach (var item in FooterItems)
+            if (item.Key == key) { SelectedItem = item; return; }
+    }
+
     public ShellViewModel()
     {
         PrimaryItems = new ObservableCollection<NavigationItem>
         {
-            new("home",    "概览",       "\uE80F", () => new PlaceholderPageViewModel("概览 / 启动模式", "选择进程注入或 SOCKS 代理模式，查看运行状态。", "P2")),
+            new("home",    "概览",       "\uE80F", () => new HomeViewModel(NavigateTo)),
             new("editor",  "封包编辑器", "\uE7C3", () => new PlaceholderPageViewModel("封包编辑器", "实时拦截、查看与修改 WinSock 封包，消息队列缓存显示。", "P2")),
             new("inject",  "进程注入",   "\uE945", () => new InjectViewModel()),
             new("proxy",   "SOCKS 代理", "\uE968", () => new PlaceholderPageViewModel("SOCKS 代理", "代理模式拦截封包，支持多协议、SSL、代理链。", "P4")),
