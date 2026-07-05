@@ -24,6 +24,8 @@ namespace Wpe.App.ViewModels
         public RelayCommand SaveCommand { get; }
         public RelayCommand FilterCommand { get; }
         public RelayCommand SendCommand { get; }
+        public RelayCommand FindCommand { get; }
+        public RelayCommand ClearSearchCommand { get; }
 
         public EditorViewModel(Action<string> navigate = null)
         {
@@ -37,7 +39,85 @@ namespace Wpe.App.ViewModels
             SaveCommand = new RelayCommand(_ => Save());
             FilterCommand = new RelayCommand(_ => _navigate?.Invoke("filter"));
             SendCommand = new RelayCommand(_ => _navigate?.Invoke("send"));
+            FindCommand = new RelayCommand(_ => ApplySearch());
+            ClearSearchCommand = new RelayCommand(_ => ClearSearch(), _ => _searchActive);
 
+            RefreshStats();
+        }
+
+        // ==== 查找（复用原生 FindOptions，保证 1:1） ====
+
+        private string _searchText = string.Empty;
+        public string SearchText
+        {
+            get => _searchText;
+            set => SetProperty(ref _searchText, value);
+        }
+
+        private bool _searchIsHex;
+        public bool SearchIsHex
+        {
+            get => _searchIsHex;
+            set => SetProperty(ref _searchIsHex, value);
+        }
+
+        private bool _searchActive;
+
+        private byte[] _searchBytes;
+
+        private void ApplySearch()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(_searchText))
+                {
+                    ClearSearch();
+                    return;
+                }
+
+                _searchBytes = _searchIsHex
+                    ? Socket_Operation.StringToBytes(Socket_Cache.SocketPacket.EncodingFormat.Hex, _searchText)
+                    : Socket_Operation.StringToBytes(Socket_Cache.SocketPacket.EncodingFormat.UTF8, _searchText);
+
+                Socket_Cache.SocketList.DoSearch = true;
+
+                _searchActive = true;
+                Packets.Filter = MatchPacket;
+                RefreshStats();
+            }
+            catch (Exception ex)
+            {
+                Socket_Operation.DoLog(MethodBase.GetCurrentMethod().Name, ex.Message);
+            }
+        }
+
+        private bool MatchPacket(object item)
+        {
+            if (_searchBytes == null || _searchBytes.Length == 0) return true;
+            if (!(item is Socket_PacketInfo spi) || spi.PacketBuffer == null) return false;
+            return IndexOfBytes(spi.PacketBuffer, _searchBytes) >= 0;
+        }
+
+        private static int IndexOfBytes(byte[] haystack, byte[] needle)
+        {
+            if (needle.Length == 0 || haystack.Length < needle.Length) return -1;
+            for (int i = 0; i <= haystack.Length - needle.Length; i++)
+            {
+                int j = 0;
+                for (; j < needle.Length; j++)
+                    if (haystack[i + j] != needle[j]) break;
+                if (j == needle.Length) return i;
+            }
+            return -1;
+        }
+
+        private void ClearSearch()
+        {
+            _searchActive = false;
+            _searchBytes = null;
+            SearchText = string.Empty;
+            Socket_Cache.SocketList.DoSearch = false;
+            Packets.Filter = null;
             RefreshStats();
         }
 

@@ -84,6 +84,20 @@
                       VerticalAlignment="Center" Foreground="{StaticResource Brush.TextSecondary}" />
         </StackPanel>
 
+        <!-- 查找栏 -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+            <TextBox Width="200" VerticalContentAlignment="Center"
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding FindCommand}" />
+                </TextBox.InputBindings>
+            </TextBox>
+            <CheckBox Content="HEX" IsChecked="{Binding SearchIsHex}" Margin="10,0,0,0"
+                      VerticalAlignment="Center" Foreground="{StaticResource Brush.TextSecondary}" />
+            <Button Content="查找" Style="{StaticResource Button.Ghost}" Margin="8,0,0,0" Command="{Binding FindCommand}" />
+            <Button Content="清除" Style="{StaticResource Button.Ghost}" Margin="8,0,0,0" Command="{Binding ClearSearchCommand}" />
+        </StackPanel>
+
         <!-- 列表 + 十六进制详情 -->
         <Grid Grid.Row="2" Margin="0,16,0,0">
             <Grid.ColumnDefinitions>
