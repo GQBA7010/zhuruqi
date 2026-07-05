@@ -47,7 +47,7 @@ public sealed class ShellViewModel : ObservableObject
             new("proxy",   "SOCKS 代理", "\uE968", () => new PlaceholderPageViewModel("SOCKS 代理", "代理模式拦截封包，支持多协议、SSL、代理链。", "P4")),
             new("filter",  "滤镜",       "\uE71C", () => new FilterViewModel()),
             new("robot",   "机器人",     "\uE99A", () => new PlaceholderPageViewModel("自动化机器人", "满足触发条件时执行预定义指令集。", "P3")),
-            new("send",    "发送",       "\uE724", () => new PlaceholderPageViewModel("封包发送", "批量发送封包，自定义顺序与循环次数。", "P3")),
+            new("send",    "发送",       "\uE724", () => new SendViewModel()),
             new("map",     "端口映射",   "\uE704", () => new PlaceholderPageViewModel("端口映射", "本地/远程端口映射（MapLocal / MapRemote）。", "P4")),
             new("account", "代理账号",   "\uE77B", () => new PlaceholderPageViewModel("代理账号", "账号、时长、设备、授权与登录链接管理。", "P4")),
         };
