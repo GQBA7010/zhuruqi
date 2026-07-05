@@ -185,10 +185,14 @@ export default function ServerPanel(): React.JSX.Element {
                       {fmtTime(d.ts)} · {formatBytes(d.bytes)}
                     </span>
                   </div>
+                  <div className="pre-label">文本预览</div>
                   <div className="pre" style={{ maxHeight: 100 }}>
                     {d.preview}
                   </div>
-                  <div className="pre" style={{ maxHeight: 80, marginTop: 6, color: 'var(--text-dim)' }}>
+                  <div className="pre-label" style={{ marginTop: 8 }}>
+                    十六进制
+                  </div>
+                  <div className="pre" style={{ maxHeight: 80, marginTop: 4, color: 'var(--text-dim)' }}>
                     {d.hexPreview}
                   </div>
                 </motion.div>

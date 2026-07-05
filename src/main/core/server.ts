@@ -12,6 +12,16 @@ function hexPreview(buf: Buffer, max = 512): string {
   return buf.length > max ? `${hex} …(+${buf.length - max}B)` : hex
 }
 
+/** 文本预览：保留可打印字符（含换行/制表），不可打印字节以 · 占位，避免乱码。 */
+function textPreview(buf: Buffer, max = 1024): string {
+  const text = buf.subarray(0, max).toString('utf8')
+  const cleaned = text.replace(
+    /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\uFFFD]/g,
+    '·'
+  )
+  return buf.length > max ? `${cleaned} …(+${buf.length - max}B)` : cleaned
+}
+
 /**
  * 伪服务端：监听端口，接收目标（经代理转发）发来的数据，
  * 可选择原样回传（echo）以模拟“目标把数据发回来”。
@@ -56,7 +66,7 @@ export class ReceiverServer extends EventEmitter {
             ts: Date.now(),
             remote,
             encoding: 'utf8',
-            preview: chunk.toString('utf8').slice(0, 1024),
+            preview: textPreview(chunk),
             hexPreview: hexPreview(chunk),
             bytes: chunk.length
           }
