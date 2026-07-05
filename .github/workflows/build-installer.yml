@@ -56,7 +56,7 @@ jobs:
         shell: pwsh
         run: |
           $dst = "${env:ProgramFiles(x86)}\Inno Setup 6\Languages\ChineseSimplified.isl"
-          $url = "https://raw.githubusercontent.com/jrsoftware/issrc/main/Files/Languages/Unofficial/ChineseSimplified.isl"
+          $url = "https://raw.githubusercontent.com/kira-96/Inno-Setup-Chinese-Simplified-Translation/main/ChineseSimplified.isl"
           Invoke-WebRequest -Uri $url -OutFile $dst
           echo "已下载 ChineseSimplified.isl -> $dst"
 
